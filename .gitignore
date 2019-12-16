@@ -2,4 +2,5 @@
 .env
 data/
 logs/
+www/
 !www/index.html
