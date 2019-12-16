@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  nginx:
+    container_name: nginx
+    build: ./services/nginx
+    ports:
+      - 8000:80
+      - 4430:443
+    volumes:
+      - $CODE_DIR:/data/www
+      - $NGINX_CONFIG_DIR:/etc/nginx/conf.d
+      - $NGINX_CONFIG_FILE:/etc/nginx/nginx/conf
+      - $NGINX_CONFIG_FASTCGI_PARMS:/etc/nginx/fastcgi_params
+      - $NGINX_CONFIG_FASTCGI_PHP:/etc/nginx/fastcgi-php.conf
+      - $NGINX_CONFIG_SSL_DIR:/etc/nginx/ssl
+      - $NGINX_LOG_DIR:/var/log/nginx/
+    restart: always
+    depends_on:
+      - php-fpm
+  php-fpm:
+    container_name: php-fpm
+    build: ./services/php/$PHP_VERSION/fpm
+    volumes:
+      - $CODE_DIR:/data/www
+    depends_on:
+      - mysql
+  mysql:
+    container_name: mysql
+    build: ./services/mysql/$MYSQL_VERSION
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DATABASE
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+    ports:
+      - $MYSQL_HOST_PORT:3306
+    volumes:
+      - $MYSQL_DATA_DIR:/var/lib/mysql
+  redis:
+    container_name: redis
+    build: ./services/redis
+    volumes:
+      - $REDIS_DATA_DIR:/data/:rw
+      - $REDIS_CONF_FILE:/usr/local/etc/redis/redis.conf
+    ports:
+      - $REDIS_HOST_PORT:6379
+
+
+
