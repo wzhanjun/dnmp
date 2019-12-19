@@ -4,3 +4,5 @@ data/
 logs/
 www/
 !www/index.html
+services/nginx/conf.d/
+!services/nginx/conf.d/default.conf

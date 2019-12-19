@@ -37,6 +37,13 @@ services:
       - $MYSQL_HOST_PORT:3306
     volumes:
       - $MYSQL_DATA_DIR:/var/lib/mysql
+  phpmyadmin:
+    container_name: phpmyadmin
+    build: ./services/phpmyadmin
+    ports:
+      - 8888:80
+    volumes:
+      - $PHPMYADMIN_USER_CONFIG:/etc/phpmyadmin/config.user.inc.php
   redis:
     container_name: redis
     build: ./services/redis
