@@ -25,8 +25,12 @@ services:
       - $CODE_DIR:/data/www
       - ./services/php/$PHP_VERSION/conf/php.ini:/usr/local/etc/php/php.ini
       - $PHP_CACERT_FILE:/usr/local/etc/php/cacert.pem
+      - ./services/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
+      - ./services/supervisor/conf.d/:/etc/supervisor/conf.d/
     depends_on:
       - mysql
+  ffmpeg:
+    image: jrottenberg/ffmpeg:latest
   mysql:
     container_name: mysql
     build: ./services/mysql/$MYSQL_VERSION

@@ -6,3 +6,4 @@ www/
 !www/index.html
 services/nginx/conf.d/
 !services/nginx/conf.d/default.conf
+services/supervisor/conf.d/

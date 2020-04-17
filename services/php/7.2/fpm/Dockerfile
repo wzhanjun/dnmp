@@ -2,12 +2,16 @@ FROM php:7.2-fpm-stretch
 
 ENV PHPREDIS_VERSION 5.1.1
 
-RUN apt-get update && apt-get install -y libpng-dev
+RUN sed -i "s@http://deb.debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list && rm -Rf /var/lib/apt/lists/* && apt-get clean && apt-get update
+
 RUN apt-get install -y \
+    libpng-dev \
     libwebp-dev \
     libjpeg62-turbo-dev \
     libpng-dev libxpm-dev \
-    libfreetype6-dev
+    libfreetype6-dev \
+    ffmpeg \
+    supervisor
 
 RUN docker-php-ext-configure gd \
     --with-gd \
@@ -39,3 +43,5 @@ RUN pecl install swoole \
 
 WORKDIR /data/www
 EXPOSE 9000
+
+# CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
