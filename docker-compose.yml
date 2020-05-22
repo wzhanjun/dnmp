@@ -27,10 +27,10 @@ services:
       - $PHP_CACERT_FILE:/usr/local/etc/php/cacert.pem
       - ./services/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
       - ./services/supervisor/conf.d/:/etc/supervisor/conf.d/
+    ports:
+      - $PHP_SWOOLE_PORT:8181
     depends_on:
       - mysql
-  ffmpeg:
-    image: jrottenberg/ffmpeg:latest
   mysql:
     container_name: mysql
     build: ./services/mysql/$MYSQL_VERSION

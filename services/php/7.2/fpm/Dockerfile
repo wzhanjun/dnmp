@@ -43,5 +43,5 @@ RUN pecl install swoole \
 
 WORKDIR /data/www
 EXPOSE 9000
-
+EXPOSE 8181
 # CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
