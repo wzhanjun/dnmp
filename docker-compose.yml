@@ -43,6 +43,7 @@ services:
       - $MYSQL_HOST_PORT:3306
     volumes:
       - $MYSQL_DATA_DIR:/var/lib/mysql
+      - ./services/mysql/conf/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
   phpmyadmin:
     container_name: phpmyadmin
     build: ./services/phpmyadmin
