@@ -11,6 +11,7 @@ RUN apt-get install -y \
     libpng-dev libxpm-dev \
     libfreetype6-dev \
     ffmpeg \
+    git \
     supervisor
 
 RUN docker-php-ext-configure gd \
@@ -22,7 +23,7 @@ RUN docker-php-ext-configure gd \
     --with-xpm-dir \
     --with-freetype-dir
 
-RUN docker-php-ext-install gd
+RUN docker-php-ext-install gd && docker-php-ext-install zip
 
 RUN docker-php-ext-install pdo_mysql mysqli \
     && curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz \
@@ -35,11 +36,22 @@ RUN docker-php-ext-install pdo_mysql mysqli \
 
 RUN apt-get install -y libssl-dev
 
+RUN git clone https://github.com/edenhill/librdkafka.git \
+&& cd librdkafka \
+    && ./configure \
+    && make \
+    && make install \
+    && pecl install rdkafka \
+    &&  echo "extension=rdkafka.so" > /usr/local/etc/php/conf.d/rdkafka.ini
+
 RUN pecl install mongodb \
 &&  echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini
 
 RUN pecl install swoole \
 &&  echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini
+
+# xdebug 扩展
+RUN pecl install xdebug-2.7.2 && docker-php-ext-enable xdebug
 
 WORKDIR /data/www
 EXPOSE 9000
