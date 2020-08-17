@@ -1,0 +1,87 @@
+version: "3"
+
+services:
+  es-node1:
+    hostname: es-node1
+    container_name: "es-node1"
+    image: elasticsearch:7.8.1
+    expose: 
+      - "9001"
+    ports:
+      - "9201:9200"
+      - "9301:9300"
+    volumes:
+      - ./services/elasticsearch/node1/es.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      - cluster.name=es-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      es-cluster-network:
+        ipv4_address: 172.21.0.10
+  es-node2:
+    hostname: es-node2
+    container_name: "es-node2"
+    image: elasticsearch:7.8.1
+    expose: 
+      - "9002"
+    ports:
+      - "9202:9200"
+      - "9302:9300"
+    volumes:
+      - ./services/elasticsearch/node2/es.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      - cluster.name=es-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      es-cluster-network:
+        ipv4_address: 172.21.0.11
+  es-node3:
+    hostname: es-node3
+    container_name: "es-node3"
+    image: elasticsearch:7.8.1
+    expose: 
+      - "9003"
+    ports:
+      - "9203:9200"
+      - "9303:9300"
+    volumes:
+      - ./services/elasticsearch/node3/es.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      - cluster.name=es-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      es-cluster-network:
+        ipv4_address: 172.21.0.12
+  kibana:
+    container_name: "kibana"
+    image: kibana:7.8.1
+    ports:
+      - "5601:5601"
+    volumes:
+      - ./services/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    environment:
+      - ELASTICSEARCH_URL=http://es-node1:9200
+    networks:
+      - es-cluster-network
+networks:
+  es-cluster-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/16

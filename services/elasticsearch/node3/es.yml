@@ -1,0 +1,17 @@
+cluster.name: elasticsearch-cluster
+node.name: es-node3
+network.bind_host: 0.0.0.0
+network.publish_host: 172.21.0.12
+http.port: 9200
+transport.tcp.port: 9300
+http.cors.enabled: true
+http.cors.allow-origin: "*"
+
+node.master: true 
+node.data: true  
+
+discovery.seed_hosts: ["172.21.0.10","172.21.0.11","172.21.0.12"] 
+cluster.initial_master_nodes: ["172.21.0.10","172.21.0.11","172.21.0.12"]
+gateway.recover_after_nodes: 2 
+gateway.recover_after_time: 5m 
+gateway.expected_nodes: 3 

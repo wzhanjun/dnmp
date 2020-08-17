@@ -1,0 +1,5 @@
+server.name: kibana
+server.host: "0"
+elasticsearch.hosts: [ "http://es-node1:9200", "http://es-node2:9200", "http://es-node3:9200" ]
+xpack.monitoring.ui.container.elasticsearch.enabled: false
+i18n.locale: "zh-CN"
