@@ -44,13 +44,6 @@ services:
     volumes:
       - $MYSQL_DATA_DIR:/var/lib/mysql
       - ./services/mysql/conf/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
-  phpmyadmin:
-    container_name: phpmyadmin
-    build: ./services/phpmyadmin
-    ports:
-      - 8888:80
-    volumes:
-      - $PHPMYADMIN_USER_CONFIG:/etc/phpmyadmin/config.user.inc.php
   redis:
     container_name: redis
     build: ./services/redis

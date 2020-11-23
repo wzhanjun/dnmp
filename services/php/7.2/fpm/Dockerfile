@@ -2,7 +2,9 @@ FROM php:7.2-fpm-stretch
 
 ENV PHPREDIS_VERSION 5.1.1
 
-RUN sed -i "s@http://deb.debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list && rm -Rf /var/lib/apt/lists/* && apt-get clean && apt-get update
+RUN sed -i "s@http://deb.debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list \
+    && sed -i "s@security.debian.org@mirrors.aliyun.com@g" /etc/apt/sources.list \
+    && rm -Rf /var/lib/apt/lists/* && apt-get clean && apt-get update --fix-missing
 
 RUN apt-get install -y \
     libpng-dev \
@@ -11,7 +13,8 @@ RUN apt-get install -y \
     libpng-dev libxpm-dev \
     libfreetype6-dev \
     ffmpeg \
-    supervisor
+    libssl-dev \
+    supervisor --fix-missing
 
 RUN docker-php-ext-configure gd \
     --with-gd \
@@ -22,9 +25,7 @@ RUN docker-php-ext-configure gd \
     --with-xpm-dir \
     --with-freetype-dir
 
-RUN docker-php-ext-install gd
-
-RUN docker-php-ext-install pdo_mysql mysqli \
+RUN docker-php-ext-install pdo_mysql mysqli  gd sockets \
     && curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz \
     && tar zxvf /tmp/redis.tar.gz \
     && rm -r /tmp/redis.tar.gz \
@@ -33,13 +34,18 @@ RUN docker-php-ext-install pdo_mysql mysqli \
     && docker-php-ext-install redis \
     && rm -rf /usr/src/php
 
-RUN apt-get install -y libssl-dev
-
 RUN pecl install mongodb \
 &&  echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongodb.ini
 
 RUN pecl install swoole \
 &&  echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini
+
+RUN curl -L -o /tmp/libkafka-v1.5.2.tar.gz https://github.com/edenhill/librdkafka/archive/v1.5.2.tar.gz \
+    && cd /tmp && tar zxvf /tmp/libkafka-v1.5.2.tar.gz \
+    && cd librdkafka-1.5.2 && ./configure && make && make install \
+    && rm -r /tmp/libkafka-v1.5.2.tar.gz \
+    && pecl install rdkafka \
+    && echo "extension=rdkafka.so" > /usr/local/etc/php/conf.d/rdkafka.ini
 
 WORKDIR /data/www
 EXPOSE 9000
