@@ -9,10 +9,6 @@ RUN apt-get install -y \
     libpng-dev libxpm-dev \
     libfreetype6-dev
 
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-
-RUN docker-php-ext-install gd
-
 RUN docker-php-ext-install pdo_mysql mysqli \
     && curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz \
     && tar zxvf /tmp/redis.tar.gz \
@@ -29,6 +25,10 @@ RUN pecl install mongodb \
 
 RUN pecl install swoole \
 &&  echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini
+
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+
+RUN docker-php-ext-install gd pcntl
 
 WORKDIR /data/www
 EXPOSE 9000

@@ -25,6 +25,8 @@ services:
       - $CODE_DIR:/data/www
       - ./services/php/$PHP_VERSION/conf/php.ini:/usr/local/etc/php/php.ini
       - $PHP_CACERT_FILE:/usr/local/etc/php/cacert.pem
+    ports:
+      - 9001:9001
   mariadb:
     container_name: mariadb
     build: ./services/mariadb
